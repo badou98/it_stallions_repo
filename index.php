@@ -1,16 +1,30 @@
 <?php 
 
-//https://f6cf-197-157-186-192.ngrok-free.app/ussd/index.php
+session_start();
+
+//https://1ce0-197-243-106-207.ngrok-free.app/ussd_demo/it_stallions_repo/index.php
 
 include_once 'Menu.php';
 
+include_once 'conn.php';
+
+error_reporting(0);
 $sessionId = $_POST['sessionId'];
 $phoneNumber = $_POST['phoneNumber'];
 $serviceCode = $_POST['serviceCode']; // Corrected assignment
-
 $text = $_POST['text'];
 
-$isRegistered = true;
+$select = $pdo->prepare("SELECT * FROM registration WHERE telephone=?");
+
+$select->execute([$phoneNumber]);
+
+
+
+if($select->rowCount()>0){
+    $userData = $select->fetch(PDO::FETCH_ASSOC);
+    $_SESSION['user_id'] = $userData['user_id'];
+    $isRegistered = true;
+}
 
 $menu = new Menu($text, $sessionId);
 
@@ -35,13 +49,13 @@ if ($text == "" && $isRegistered) {
     $textArray = explode("*", $text);
     switch ($textArray[0]) {
         case '1': // Corrected string comparison
-            $menu->menuSendmoney($textArray); // Corrected method name
+            $menu->menuDeposit($textArray); // Corrected method name
             break;
         case '2': // Corrected string comparison
-            $menu->menuWithdrawMoney($textArray); // Corrected method name
+            $menu->menuCheckBalance($textArray); // Corrected method name
             break;
         case '3': // Corrected string comparison
-            $menu->menuCheckBalance($textArray); // Corrected method name
+            $menu->menuTransactionHistory($_SESSION['user_id']); // Corrected method name
             break;
         default:
             echo "END Invalid Choice\n";
