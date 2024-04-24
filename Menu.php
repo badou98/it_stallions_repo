@@ -24,7 +24,7 @@ class Menu {
     }
 
     public function MenuRegistered($textArray) {
-        // Do something
+        
         $level = count($textArray);
         if ($level == 1) {
             echo "CON set your fullname\n";
@@ -49,18 +49,18 @@ class Menu {
                 $select = $pdo->query("SELECT user_id FROM registration ORDER BY user_id DESC LIMIT 1");
                 $d = $select->fetch(PDO::FETCH_ASSOC);
                 $user_id = $d["user_id"];
-                $statement2 = $pdo->prepare("INSERT INTO account_tbl(user_id, balance, status) VALUES(?, ?, ?)");
-                $balance = 0.0;
+                $statement2 = $pdo->prepare("INSERT INTO account_tbl(user_id, balance, positions, status) VALUES(?, ?, ?, ?)");
+                $balance = 3000.0;
+                $position = 1;
                 $status = true;
-                $statement2->execute([$user_id, $balance, $status]);
+                $statement2->execute([$user_id, $balance,$position, $status]);
     
                 $pdo->commit();
     
                 if ($pin != $confirm_pin) {
                     echo "END PINs Do not match, retry";
                 } else {
-                    // Register user
-                    // Send SMS
+                    
                     echo "END $name You have successfully registered";
                 }
             } catch (PDOException $e) {
@@ -74,10 +74,12 @@ class Menu {
     public function mainMenuRegistered() {
         // Do something
         $response = "CON welcome back to Daily contribution cooperation\n";
-        $response .= "1. deposit money\n";
+        $response .= "1. contribute money\n";
         $response .= "2. check balance\n";
         $response .= "3. history\n";
-        $response .= "4. setting\n";
+        $response .= "4. deposit money\n";
+        $response .= "5. withdraw money\n";
+        $response .= "6. setting\n";
         echo $response;
     }
     public function menuDeposit($textArray) {
@@ -86,19 +88,20 @@ class Menu {
     
         if ($level == 1) {
             // Prompt user to enter the amount to deposit
-            echo "CON Enter amount to deposit:";
+            echo "CON Enter amount to contribute:";
         } elseif ($level == 2) {
             // Validate the entered amount (assuming it's a valid numeric value)
             $amount = floatval($textArray[1]); // Convert input to float
             
             if ($amount <= 0) {
                 // If amount is not a positive number, prompt user to retry
-                echo "END Invalid amount. Please enter a valid amount to deposit.";
+                echo "END Invalid amount. Please enter a valid amount to contribute.";
             } else {
                 // Display confirmation prompt to the user
-                echo "CON Deposit $amount RWF?\n";
+                echo "CON Contribute $amount RWF?\n";
                 echo "1. Confirm\n";
                 echo "2. Cancel\n";
+                
             }
         } elseif ($level == 3) {
             // Process the user's confirmation choice
@@ -106,9 +109,9 @@ class Menu {
             
             if ($confirmation == "1") {
                 // Prompt user to enter PIN for confirmation
-                echo "CON Enter your PIN to confirm the deposit:";
+                echo "CON Enter your PIN to confirm the contribute:";
             } elseif ($confirmation == "2") {
-                echo "END Deposit cancelled.";
+                echo "END Contribute cancelled.";
             } else {
                 echo "END Invalid option. Please try again.";
             }
@@ -116,9 +119,6 @@ class Menu {
             // Process the user's PIN
             $pin = $textArray[3];
             
-            // You can implement PIN validation here
-            // For now, let's assume the PIN is valid
-            echo "CON PIN confirmed. Processing deposit...\n";
     
             // Continue with the deposit transaction
             $amount = floatval($textArray[1]); // Convert input to float
@@ -132,33 +132,42 @@ class Menu {
                 $pdo->beginTransaction();
     
                 // Retrieve the user's current balance from the database
-                $statement = $pdo->prepare("SELECT balance FROM account_tbl WHERE user_id = ?");
+                $statement = $pdo->prepare("SELECT balance,positions FROM account_tbl WHERE user_id = ?");
                 $statement->execute([$userId]);
                 $data = $statement->fetch(PDO::FETCH_ASSOC);
                 $currentBalance = isset($data['balance']) ? floatval($data['balance']) : 0.0;
+
+                $_SESSION['positions'] = $data['positions'];
+
+                $position = $_SESSION['positions'];
     
                 // Check if user has sufficient balance for deposit
-                if ($currentBalance >= $amount) {
+                if ($currentBalance >= $amount*$position) {
                     // Calculate the new balance after deposit
-                    $newBalance = $currentBalance - $amount;
+                    $total_amount = $amount * $position;
+                    $newBalance = $currentBalance - $total_amount;
     
                     // Update the user's balance in the account_tbl table
                     $updateStatement = $pdo->prepare("UPDATE account_tbl SET balance = ? WHERE user_id = ?");
                     $updateStatement->execute([$newBalance, $userId]);
+
+                    
     
                     // Record the deposit transaction in the contribution_tbl table
-                    $insertStatement = $pdo->prepare("INSERT INTO contribution_tbl (user_id, amount) VALUES (?, ?)");
-                    $insertStatement->execute([$userId, $amount]);
+                    $insertStatement = $pdo->prepare("INSERT INTO contribution_tbl (user_id, amount,positions) VALUES (?, ?, ?)");
+                    $insertStatement->execute([$userId, $total_amount,$position]);
+
+
     
                     // Insert the transaction into transaction history table
-                    $transactionType = 'Deposit';
+                    $transactionType = 'contribute';
                     $insertTransaction = $pdo->prepare("INSERT INTO transaction_tbl (user_id, transaction_type, amount, transaction_datetime) VALUES (?, ?, ?, NOW())");
-                    $insertTransaction->execute([$userId, $transactionType, $amount]);
+                    $insertTransaction->execute([$userId, $transactionType, $total_amount]);
     
                     // Commit the transaction
                     $pdo->commit();
     
-                    echo "END $amount RWF deposited successfully. New balance: $newBalance RWF.";
+                    echo "END $total_amount RWF deposited successfully. New balance: $newBalance RWF.";
                 } else {
                     // Insufficient balance for deposit
                     echo "END Insufficient balance for deposit. Please try a smaller amount.";
@@ -173,12 +182,6 @@ class Menu {
             echo "END Invalid input. Please try again.";
         }
     }
-    
-    
-    
-    
-    
-
   
 
     public function middleware($text){
@@ -188,6 +191,12 @@ class Menu {
 
     public function goBack($text){
 
+        $explodeText = explode("*",$text);
+
+        while(array_search(Util::$goBack,$explodeText) != false){
+            $firstIndex = array_search(Util::$goBack,$explodeText);
+            array_splice($explodeText,$firstIndex-1,2);
+        }
         $explodeText = explode("*",$text);
 
         while(array_search(Util::$goBack,$explodeText) != false){
