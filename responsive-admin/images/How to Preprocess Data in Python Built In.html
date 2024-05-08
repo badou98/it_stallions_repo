@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html dir="ltr" prefix="og: https://ogp.me/ns#" class="svg green js" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta charset="utf-8"><meta name="description" content="Here’s a step-by-step tutorial on data preprocessing implementation using Python, NumPy and Pandas."><meta name="abstract" content="Data Science"><meta name="keywords" content="Machine Learning"><style type="text/css">:root, :host {
+  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Solid";
+  --fa-font-regular: normal 400 1em/1 "Font Awesome 6 Regular";
+  --fa-font-light: normal 300 1em/1 "Font Awesome 6 Light";
+  --fa-font-thin: normal 100 1em/1 "Font Awesome 6 Thin";
+  --fa-font-duotone: normal 900 1em/1 "Font Awesome 6 Duotone";
+  --fa-font-sharp-solid: normal 900 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-regular: normal 400 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-light: normal 300 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands";
+}
+
+svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+.svg-inline--fa {
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}
+.svg-inline--fa.fa-2xs {
+  vertical-align: 0.1em;
+}
+.svg-inline--fa.fa-xs {
+  vertical-align: 0em;
+}
+.svg-inline--fa.fa-sm {
+  vertical-align: -0.0714285705em;
+}
+.svg-inline--fa.fa-lg {
+  vertical-align: -0.2em;
+}
+.svg-inline--fa.fa-xl {
+  vertical-align: -0.25em;
+}
+.svg-inline--fa.fa-2xl {
+  vertical-align: -0.3125em;
+}
+.svg-inline--fa.fa-pull-left {
+  margin-right: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-pull-right {
+  margin-left: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-li {
+  width: var(--fa-li-width, 2em);
+  top: 0.25em;
+}
+.svg-inline--fa.fa-fw {
+  width: var(--fa-fw-width, 1.25em);
+}
+
+.fa-layers svg.svg-inline--fa {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.fa-layers-counter, .fa-layers-text {
+  display: inline-block;
+  position: absolute;
+  text-align: center;
+}
+
+.fa-layers {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  text-align: center;
+  vertical-align: -0.125em;
+  width: 1em;
+}
+.fa-layers svg.svg-inline--fa {
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-text {
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-counter {
+  background-color: var(--fa-counter-background-color, #ff253a);
+  border-radius: var(--fa-counter-border-radius, 1em);
+  box-sizing: border-box;
+  color: var(--fa-inverse, #fff);
+  line-height: var(--fa-counter-line-height, 1);
+  max-width: var(--fa-counter-max-width, 5em);
+  min-width: var(--fa-counter-min-width, 1.5em);
+  overflow: hidden;
+  padding: var(--fa-counter-padding, 0.25em 0.5em);
+  right: var(--fa-right, 0);
+  text-overflow: ellipsis;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-counter-scale, 0.25));
+          transform: scale(var(--fa-counter-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-bottom-right {
+  bottom: var(--fa-bottom, 0);
+  right: var(--fa-right, 0);
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom right;
+          transform-origin: bottom right;
+}
+
+.fa-layers-bottom-left {
+  bottom: var(--fa-bottom, 0);
+  left: var(--fa-left, 0);
+  right: auto;
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom left;
+          transform-origin: bottom left;
+}
+
+.fa-layers-top-right {
+  top: var(--fa-top, 0);
+  right: var(--fa-right, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-top-left {
+  left: var(--fa-left, 0);
+  right: auto;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
+}
+
+.fa-1x {
+  font-size: 1em;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}
+
+.fa-4x {
+  font-size: 4em;
+}
+
+.fa-5x {
+  font-size: 5em;
+}
+
+.fa-6x {
+  font-size: 6em;
+}
+
+.fa-7x {
+  font-size: 7em;
+}
+
+.fa-8x {
+  font-size: 8em;
+}
+
+.fa-9x {
+  font-size: 9em;
+}
+
+.fa-10x {
+  font-size: 10em;
+}
+
+.fa-2xs {
+  font-size: 0.625em;
+  line-height: 0.1em;
+  vertical-align: 0.225em;
+}
+
+.fa-xs {
+  font-size: 0.75em;
+  line-height: 0.0833333337em;
+  vertical-align: 0.125em;
+}
+
+.fa-sm {
+  font-size: 0.875em;
+  line-height: 0.0714285718em;
+  vertical-align: 0.0535714295em;
+}
+
+.fa-lg {
+  font-size: 1.25em;
+  line-height: 0.05em;
+  vertical-align: -0.075em;
+}
+
+.fa-xl {
+  font-size: 1.5em;
+  line-height: 0.0416666682em;
+  vertical-align: -0.125em;
+}
+
+.fa-2xl {
+  font-size: 2em;
+  line-height: 0.03125em;
+  vertical-align: -0.1875em;
+}
+
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-ul {
+  list-style-type: none;
+  margin-left: var(--fa-li-margin, 2.5em);
+  padding-left: 0;
+}
+.fa-ul > li {
+  position: relative;
+}
+
+.fa-li {
+  left: calc(var(--fa-li-width, 2em) * -1);
+  position: absolute;
+  text-align: center;
+  width: var(--fa-li-width, 2em);
+  line-height: inherit;
+}
+
+.fa-border {
+  border-color: var(--fa-border-color, #eee);
+  border-radius: var(--fa-border-radius, 0.1em);
+  border-style: var(--fa-border-style, solid);
+  border-width: var(--fa-border-width, 0.08em);
+  padding: var(--fa-border-padding, 0.2em 0.25em 0.15em);
+}
+
+.fa-pull-left {
+  float: left;
+  margin-right: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-pull-right {
+  float: right;
+  margin-left: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-beat {
+  -webkit-animation-name: fa-beat;
+          animation-name: fa-beat;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-bounce {
+  -webkit-animation-name: fa-bounce;
+          animation-name: fa-bounce;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+}
+
+.fa-fade {
+  -webkit-animation-name: fa-fade;
+          animation-name: fa-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-beat-fade {
+  -webkit-animation-name: fa-beat-fade;
+          animation-name: fa-beat-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-flip {
+  -webkit-animation-name: fa-flip;
+          animation-name: fa-flip;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-shake {
+  -webkit-animation-name: fa-shake;
+          animation-name: fa-shake;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 2s);
+          animation-duration: var(--fa-animation-duration, 2s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin-reverse {
+  --fa-animation-direction: reverse;
+}
+
+.fa-pulse,
+.fa-spin-pulse {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, steps(8));
+          animation-timing-function: var(--fa-animation-timing, steps(8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-beat,
+.fa-bounce,
+.fa-fade,
+.fa-beat-fade,
+.fa-flip,
+.fa-pulse,
+.fa-shake,
+.fa-spin,
+.fa-spin-pulse {
+    -webkit-animation-delay: -1ms;
+            animation-delay: -1ms;
+    -webkit-animation-duration: 1ms;
+            animation-duration: 1ms;
+    -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+    -webkit-transition-delay: 0s;
+            transition-delay: 0s;
+    -webkit-transition-duration: 0s;
+            transition-duration: 0s;
+  }
+}
+@-webkit-keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@-webkit-keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@-webkit-keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@-webkit-keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@-webkit-keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@-webkit-keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+.fa-rotate-90 {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.fa-rotate-180 {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.fa-rotate-270 {
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+
+.fa-flip-horizontal {
+  -webkit-transform: scale(-1, 1);
+          transform: scale(-1, 1);
+}
+
+.fa-flip-vertical {
+  -webkit-transform: scale(1, -1);
+          transform: scale(1, -1);
+}
+
+.fa-flip-both,
+.fa-flip-horizontal.fa-flip-vertical {
+  -webkit-transform: scale(-1, -1);
+          transform: scale(-1, -1);
+}
+
+.fa-rotate-by {
+  -webkit-transform: rotate(var(--fa-rotate-angle, none));
+          transform: rotate(var(--fa-rotate-angle, none));
+}
+
+.fa-stack {
+  display: inline-block;
+  vertical-align: middle;
+  height: 2em;
+  position: relative;
+  width: 2.5em;
+}
+
+.fa-stack-1x,
+.fa-stack-2x {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: var(--fa-stack-z-index, auto);
+}
+
+.svg-inline--fa.fa-stack-1x {
+  height: 1em;
+  width: 1.25em;
+}
+.svg-inline--fa.fa-stack-2x {
+  height: 2em;
+  width: 2.5em;
+}
+
+.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}
+
+.sr-only,
+.fa-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:not(:focus),
+.fa-sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.svg-inline--fa .fa-primary {
+  fill: var(--fa-primary-color, currentColor);
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa .fa-secondary {
+  fill: var(--fa-secondary-color, currentColor);
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-primary {
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-secondary {
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa mask .fa-primary,
+.svg-inline--fa mask .fa-secondary {
+  fill: black;
+}
+
+.fad.fa-inverse,
+.fa-duotone.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}</style><link rel="canonical" href="https://builtin.com/machine-learning/how-to-preprocess-data-python"><meta name="robots" content="index, follow, max-image-preview:large"><link rel="image_src" href="https://builtin.com/sites/www.builtin.com/files/styles/og/public/2022-06/how-to-preprocess-data-python.png"><meta property="og:site_name" content="Built In"><meta property="og:url" content="https://builtin.com/machine-learning/how-to-preprocess-data-python"><meta property="og:title" content="How to Preprocess Data in Python"><meta property="og:description" content="Here’s a step-by-step tutorial on data preprocessing implementation using Python, NumPy and Pandas."><meta property="og:image:secure_url" content="https://builtin.com/sites/www.builtin.com/files/styles/og/public/2022-06/how-to-preprocess-data-python.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="Here’s a step-by-step tutorial on data preprocessing implementation using Python, NumPy and Pandas."><meta name="twitter:title" content="How to Preprocess Data in Python | Built In"><meta name="twitter:image" content="https://builtin.com/sites/www.builtin.com/files/styles/og/public/2022-06/how-to-preprocess-data-python.png"><meta name="twitter:image:alt" content="how-to-preprocess-data-python"><meta name="Generator" content="Drupal 10 (https://www.drupal.org); Commerce 2"><meta name="MobileOptimized" content="width"><meta name="HandheldFriendly" content="true"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5"><script src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/gtm.js" async=""></script><script type="application/ld+json">{"@context":"https:\/\/schema.org","@graph":[{"title":"How to Preprocess Data in Python","hiringOrganization":{"@type":"Organization","logo":"https:"},"identifier":{"@type":"PropertyValue","value":"1044051"},"video":[{"@type":"VideoObject","name":"Data Preprocessing using Pandas and Matplotlib","uploadDate":"Wed, 04\/11\/2018 - 19:37","thumbnailUrl":"https:\/\/i.ytimg.com\/vi\/ePHZlT1XjrA\/mqdefault.jpg","url":"https:\/\/youtu.be\/ePHZlT1XjrA","description":"Data Preprocessing in order to remove outliers and normalize attribute using Bank Marketing Dataset","embedUrl":"https:\/\/www.youtube.com\/embed\/ePHZlT1XjrA"}]},{"@type":"Article","headline":"How to Preprocess Data in Python","name":"How to Preprocess Data in Python","about":["Data Science","Expert Contributors","Machine Learning"],"description":"In this article, we\u2019ll prep a machine learning model\u00a0 to predict who survived the Titanic. To do that, we first have to clean up our data. I\u2019ll show you how to apply preprocessing techniques on the Titanic data set.\u00a0\n\nTo get started, you\u2019ll need:","image":{"@type":"ImageObject","url":"https:\/\/builtin.com\/sites\/www.builtin.com\/files\/styles\/og\/public\/2022-06\/how-to-preprocess-data-python.png","width":"1200","height":"630"},"datePublished":"2022-06-10T09:00:00-0500","author":{"@type":"Person","@id":"https:\/\/builtin.com\/member\/afroz-chakure\/107432","name":"Afroz Chakure","url":"https:\/\/builtin.com\/member\/afroz-chakure\/107432","sameAs":["https:\/\/builtin.com\/"]},"publisher":{"@type":"Organization","@id":"https:\/\/builtin.com\/","name":"Built In","url":"https:\/\/builtin.com\/","sameAs":"https:\/\/builtin.com\/","logo":{"@type":"ImageObject","representativeOfPage":"True","url":"https:\/\/builtin.com\/\/profiles\/builtin\/builtin.png"}},"mainEntityOfPage":{"@id":"https:\/\/builtin.com\/machine-learning\/how-to-preprocess-data-python","@type":"WebPage","name":"How to Preprocess Data in Python"}}]}</script><link rel="icon" href="https://cdn.builtin.com/profiles/builtin/themes/bix/BI_Favicon%2032x32.png" type="image/png"><link rel="preload" as="image" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/how-to-preprocess-data-python.avif" imagesrcset="https://builtin.com/cdn-cgi/image/f=auto,quality=80,width=320,height=185/https://builtin.com/sites/www.builtin.com/files/styles/byline_image/public/2022-06/how-to-preprocess-data-python.png 400w, https://builtin.com/cdn-cgi/image/f=auto,quality=80,width=500,height=290/https://builtin.com/sites/www.builtin.com/files/styles/byline_image/public/2022-06/how-to-preprocess-data-python.png 600w, https://builtin.com/cdn-cgi/image/f=auto,quality=80,width=752,height=435/https://builtin.com/sites/www.builtin.com/files/styles/byline_image/public/2022-06/how-to-preprocess-data-python.png 752w" imagesizes="100vw"><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0];var j=d.createElement(s);var dl=l!='dataLayer'?'&l='+l:'';j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+'';j.async=true;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M7NGJ28');</script><meta name="theme-color" content="#04003F"><meta property="og:image" content="https://builtin.com/sites/www.builtin.com/files/styles/og/public/2022-06/how-to-preprocess-data-python.png"><meta property="og:image:url" content="https://builtin.com/sites/www.builtin.com/files/styles/og/public/2022-06/how-to-preprocess-data-python.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="600"><title>How to Preprocess Data in Python | Built In</title><link rel="stylesheet" media="all" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/css_RFZLwOn_Eevngl2WVLgGE52dZ7O2LQGvG_T5006u6ZY.css"><link rel="stylesheet" media="all" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/css_arpkgrAAag51FnBC1KF1WyOqDAS_qbt1DBsaqGHHrA0.html"><link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""><link rel="preload" as="style" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/css2.css"><link rel="stylesheet" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/css2.css" media="all" onload="this.media='all'"><script src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/identifier" async=""></script><script id="data-client-identifier-script">
+(function() {
+var thisScript = document.getElementById("data-client-identifier-script");
+if (!thisScript) {
+return;
+}
+var trackingApiUrl = "https://api.builtin.com/track/identifier";
+var clientIdKey = "builtin_client_id";
+var localId = window.localStorage.getItem(clientIdKey);
+if (localId) {
+trackingApiUrl += "?" + clientIdKey + "=" + localId;
+}
+var script = document.createElement("script");
+script.src = trackingApiUrl;
+script.async = true;
+thisScript.parentNode.insertBefore(script, thisScript);
+})();
+</script><link rel="preload" as="style" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/e1873c0.css"><script charset="utf-8" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/a7370ac.js"></script><link rel="preload" as="style" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/ff68513.css"><script charset="utf-8" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/f080a1c.js"></script><link rel="preload" as="style" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/af9ee71.css"><script charset="utf-8" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/66d510c.js"></script><link id="googleidentityservice" type="text/css" media="all" rel="stylesheet" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/style.css"><style id="googleidentityservice_button_styles">.qJTHM{-moz-user-select:none;color:#202124;direction:ltr;font-family:"Roboto-Regular",arial,sans-serif;font-weight:400;margin:0;overflow:hidden}.ynRLnc{left:-9999px;position:absolute;top:-9999px}.L6cTce{display:none}.bltWBb{word-break:break-all}.hSRGPd{color:#1a73e8;cursor:pointer;font-weight:500;text-decoration:none}.Bz112c-W3lGp{height:16px;width:16px}.Bz112c-E3DyYd{height:20px;width:20px}.Bz112c-r9oPif{height:24px;width:24px}.Bz112c-uaxL4e{-moz-border-radius:10px;border-radius:10px}.LgbsSe-Bz112c{display:block}.S9gUrf-YoZ4jf,.S9gUrf-YoZ4jf *{border:none;margin:0;padding:0}.fFW7wc-ibnC6b>.aZ2wEe>div{border-color:#4285f4}.P1ekSe-ZMv3u>div:nth-child(1){background-color:#1a73e8!important}.P1ekSe-ZMv3u>div:nth-child(2),.P1ekSe-ZMv3u>div:nth-child(3){background-image:linear-gradient(to right,rgba(255,255,255,.7),rgba(255,255,255,.7)),linear-gradient(to right,#1a73e8,#1a73e8)!important}.haAclf{display:inline-block}.nsm7Bb-HzV7m-LgbsSe{border-radius:4px;box-sizing:border-box;transition:background-color .218s,border-color .218s;-moz-user-select:none;background-color:#fff;background-image:none;border:1px solid #dadce0;color:#3c4043;cursor:pointer;font-family:"Google Sans",arial,sans-serif;font-size:14px;height:40px;letter-spacing:0.25px;outline:none;overflow:hidden;padding:0 12px;position:relative;text-align:center;vertical-align:middle;white-space:nowrap;width:auto}@media screen and (-ms-high-contrast:active){.nsm7Bb-HzV7m-LgbsSe{border:2px solid windowText;color:windowText}}.nsm7Bb-HzV7m-LgbsSe.pSzOP-SxQuSe{font-size:14px;height:32px;letter-spacing:0.25px;padding:0 10px}.nsm7Bb-HzV7m-LgbsSe.purZT-SxQuSe{font-size:11px;height:20px;letter-spacing:0.3px;padding:0 8px}.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe{padding:0;width:40px}.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe.pSzOP-SxQuSe{width:32px}.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe.purZT-SxQuSe{width:20px}.nsm7Bb-HzV7m-LgbsSe.JGcpL-RbRzK{border-radius:20px}.nsm7Bb-HzV7m-LgbsSe.JGcpL-RbRzK.pSzOP-SxQuSe{border-radius:16px}.nsm7Bb-HzV7m-LgbsSe.JGcpL-RbRzK.purZT-SxQuSe{border-radius:10px}.nsm7Bb-HzV7m-LgbsSe.MFS4be-Ia7Qfc{border:none;color:#fff}.nsm7Bb-HzV7m-LgbsSe.MFS4be-v3pZbf-Ia7Qfc{background-color:#1a73e8}.nsm7Bb-HzV7m-LgbsSe.MFS4be-JaPV2b-Ia7Qfc{background-color:#202124;color:#e8eaed}.nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-Bz112c{height:18px;margin-right:8px;min-width:18px;width:18px}.nsm7Bb-HzV7m-LgbsSe.pSzOP-SxQuSe .nsm7Bb-HzV7m-LgbsSe-Bz112c{height:14px;min-width:14px;width:14px}.nsm7Bb-HzV7m-LgbsSe.purZT-SxQuSe .nsm7Bb-HzV7m-LgbsSe-Bz112c{height:10px;min-width:10px;width:10px}.nsm7Bb-HzV7m-LgbsSe.jVeSEe .nsm7Bb-HzV7m-LgbsSe-Bz112c{margin-left:8px;margin-right:-4px}.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe .nsm7Bb-HzV7m-LgbsSe-Bz112c{margin:0;padding:10px}.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe.pSzOP-SxQuSe .nsm7Bb-HzV7m-LgbsSe-Bz112c{padding:8px}.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe.purZT-SxQuSe .nsm7Bb-HzV7m-LgbsSe-Bz112c{padding:4px}.nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{border-top-left-radius:3px;border-bottom-left-radius:3px;display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;justify-content:center;align-items:center;background-color:#fff;height:36px;margin-left:-10px;margin-right:12px;min-width:36px;width:36px}.nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf .nsm7Bb-HzV7m-LgbsSe-Bz112c,.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf .nsm7Bb-HzV7m-LgbsSe-Bz112c{margin:0;padding:0}.nsm7Bb-HzV7m-LgbsSe.pSzOP-SxQuSe .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{height:28px;margin-left:-8px;margin-right:10px;min-width:28px;width:28px}.nsm7Bb-HzV7m-LgbsSe.purZT-SxQuSe .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{height:16px;margin-left:-6px;margin-right:8px;min-width:16px;width:16px}.nsm7Bb-HzV7m-LgbsSe.Bz112c-LgbsSe .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{border-radius:3px;margin-left:2px;margin-right:0;padding:0}.nsm7Bb-HzV7m-LgbsSe.JGcpL-RbRzK .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{border-radius:18px}.nsm7Bb-HzV7m-LgbsSe.pSzOP-SxQuSe.JGcpL-RbRzK .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{border-radius:14px}.nsm7Bb-HzV7m-LgbsSe.purZT-SxQuSe.JGcpL-RbRzK .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{border-radius:8px}.nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-bN97Pc-sM5MNb{display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;align-items:center;flex-direction:row;justify-content:space-between;flex-wrap:nowrap;height:100%;position:relative;width:100%}.nsm7Bb-HzV7m-LgbsSe .oXtfBe-l4eHX{justify-content:center}.nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-BPrWId{flex-grow:1;font-family:"Google Sans",arial,sans-serif;font-weight:500;overflow:hidden;text-overflow:ellipsis;vertical-align:top}.nsm7Bb-HzV7m-LgbsSe.purZT-SxQuSe .nsm7Bb-HzV7m-LgbsSe-BPrWId{font-weight:300}.nsm7Bb-HzV7m-LgbsSe .oXtfBe-l4eHX .nsm7Bb-HzV7m-LgbsSe-BPrWId{flex-grow:0}.nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-MJoBVe{transition:background-color .218s;bottom:0;left:0;position:absolute;right:0;top:0}.nsm7Bb-HzV7m-LgbsSe:hover,.nsm7Bb-HzV7m-LgbsSe:focus{box-shadow:none;border-color:#d2e3fc;outline:none}.nsm7Bb-HzV7m-LgbsSe:hover .nsm7Bb-HzV7m-LgbsSe-MJoBVe,.nsm7Bb-HzV7m-LgbsSe:focus .nsm7Bb-HzV7m-LgbsSe-MJoBVe{background:rgba(66,133,244,.04)}.nsm7Bb-HzV7m-LgbsSe:active .nsm7Bb-HzV7m-LgbsSe-MJoBVe{background:rgba(66,133,244,.1)}.nsm7Bb-HzV7m-LgbsSe.MFS4be-Ia7Qfc:hover .nsm7Bb-HzV7m-LgbsSe-MJoBVe,.nsm7Bb-HzV7m-LgbsSe.MFS4be-Ia7Qfc:focus .nsm7Bb-HzV7m-LgbsSe-MJoBVe{background:rgba(255,255,255,.24)}.nsm7Bb-HzV7m-LgbsSe.MFS4be-Ia7Qfc:active .nsm7Bb-HzV7m-LgbsSe-MJoBVe{background:rgba(255,255,255,.32)}.nsm7Bb-HzV7m-LgbsSe .n1UuX-DkfjY{border-radius:50%;display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;height:20px;margin-left:-4px;margin-right:8px;min-width:20px;width:20px}.nsm7Bb-HzV7m-LgbsSe.jVeSEe .nsm7Bb-HzV7m-LgbsSe-BPrWId{font-family:"Roboto";font-size:12px;text-align:left}.nsm7Bb-HzV7m-LgbsSe.jVeSEe .nsm7Bb-HzV7m-LgbsSe-BPrWId .ssJRIf,.nsm7Bb-HzV7m-LgbsSe.jVeSEe .nsm7Bb-HzV7m-LgbsSe-BPrWId .K4efff .fmcmS{overflow:hidden;text-overflow:ellipsis}.nsm7Bb-HzV7m-LgbsSe.jVeSEe .nsm7Bb-HzV7m-LgbsSe-BPrWId .K4efff{display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;align-items:center;color:#5f6368;fill:#5f6368;font-size:11px;font-weight:400}.nsm7Bb-HzV7m-LgbsSe.jVeSEe.MFS4be-Ia7Qfc .nsm7Bb-HzV7m-LgbsSe-BPrWId .K4efff{color:#e8eaed;fill:#e8eaed}.nsm7Bb-HzV7m-LgbsSe.jVeSEe .nsm7Bb-HzV7m-LgbsSe-BPrWId .K4efff .Bz112c{height:18px;margin:-3px -3px -3px 2px;min-width:18px;width:18px}.nsm7Bb-HzV7m-LgbsSe.jVeSEe .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{border-top-left-radius:0;border-bottom-left-radius:0;border-top-right-radius:3px;border-bottom-right-radius:3px;margin-left:12px;margin-right:-10px}.nsm7Bb-HzV7m-LgbsSe.jVeSEe.JGcpL-RbRzK .nsm7Bb-HzV7m-LgbsSe-Bz112c-haAclf{border-radius:18px}.L5Fo6c-sM5MNb{border:0;display:block;left:0;position:relative;top:0}.L5Fo6c-bF1uUb{-moz-border-radius:4px;border-radius:4px;bottom:0;cursor:pointer;left:0;position:absolute;right:0;top:0}.L5Fo6c-bF1uUb:focus{border:none;outline:none}sentinel{}</style></head><body class="city-national blog-national-full blog-buyline-content expert-contrib-blog-post page-user-role-anon path-node page-node-type-blog menuHidden" data-once="b-root"> <a href="#main-content" class="visually-hidden focusable skip-link"> Skip to main content </a> <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M7NGJ28" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas=""><div class="layout-container"><div class="header header-vue builtin-nuxt-app"><div class="region region-header"><div id="block-mainbuiltinnavigation" class="block block-bix-global block-bix-global-vue-navigation"><script defer="defer" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/36bca84.js" crossorigin="anonymous"></script><script defer="defer" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/85d004d.js" crossorigin="anonymous"></script><script defer="defer" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/4bc6586.js" crossorigin="anonymous"></script><link href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/631db69.css" rel="stylesheet" crossorigin="anonymous"><link href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/bdd32c9.css" rel="stylesheet" crossorigin="anonymous"><link rel="preload" crossorigin="anonymous" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/36bca84.js" as="script"><link rel="preload" crossorigin="anonymous" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/631db69.css" as="style"><link rel="preload" crossorigin="anonymous" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/85d004d.js" as="script"><link rel="preload" crossorigin="anonymous" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/bdd32c9.css" as="style"><link rel="preload" crossorigin="anonymous" href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/4bc6586.js" as="script"><div id="__nuxt"><!----><div id="__layout"><div data-v-7ae4d302="" class="nav-subapp-wrapper"><div data-v-7ae4d302="" id="builtin-navigation" class="builtin-navigation-wrapper"><nav data-v-7360640c="" data-v-7ae4d302="" id="app-navigation" class="banner position-static"><!----> <div data-v-7360640c="" class="position-relative"><div data-v-7360640c="" class="position-relative"><div data-v-7360640c="" class="bg-main-nav"><!----> <div data-v-7360640c="" class="grid"><div data-v-7360640c="" class="center-column"><div data-v-7360640c="" class="column-left"><div data-v-690e9d71="" data-v-7360640c="" class="logo navigation-logo"><a data-v-57b66a64="" data-v-690e9d71="" href="https://builtin.com/"><img data-v-29970e71="" data-v-690e9d71="" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/9.svg" alt="Built In National" class="desktop visible" data-v-57b66a64="" width="138" height="49"> <span data-v-690e9d71="" data-v-57b66a64="" class="sr-only">Built In National</span></a></div></div> <div data-v-7360640c="" class="column-right"><div data-v-4a65d320="" data-v-7360640c="" class="menu-container menu-type-main"><button data-v-4a65d320="" type="button" class="menu-search"><svg data-v-4a65d320="" aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa-icon nav-magnifier-icon svg-inline--fa fa-magnifying-glass"><path data-v-4a65d320="" fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg> <span data-v-4a65d320="" class="sr-only">Open Search</span></button> <div data-v-4a65d320="" class="menu-item"><div data-v-07caf33e="" data-v-4a65d320=""><a data-v-57b66a64="" data-v-07caf33e="" href="https://employers.builtin.com/membership?utm_medium=BIReferral&amp;utm_source=foremployers" target="_blank" class="employers">
+    For Employers
+  </a></div></div> <div data-v-4a65d320=""><div data-v-6b22f9a9="" data-v-4a65d320="" class="profile-auth"><div data-v-6b22f9a9="" id="g_id_onload" data-client_id="941473408521-r82mlse6rh2ar9loff8bgnbqtbp6inrs.apps.googleusercontent.com" data-login_uri="https://accounts.builtin.com/External/OneTap" data-new_user_return_url="https://builtin.com/" data-existing_user_return_url="https://builtin.com/login?destination=%2Fmachine-learning%2Fhow-to-preprocess-data-python" data-prompt_parent_id="g_id_onload" style="position: absolute; top: 150px; right: 20px; z-index: 1001;"><div><script type="application/javascript" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/client" async="async" defer="defer"></script></div><div style="position: relative; z-index: 9999; top: 0px; left: 0px; height: 302px; width: auto;" id="credential_picker_container"><iframe src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/select.html" title="Boîte de dialogue &quot;Se connecter avec Google&quot;" style="height: 302px; width: 391px; overflow: hidden;"></iframe></div></div> <button data-v-6b22f9a9="" class="b-oauth signup">
+    Join
+  </button> <span data-v-6b22f9a9="" class="spl national"></span> <button data-v-6b22f9a9="" class="b-oauth login">
+    Log In
+  </button></div></div></div></div></div></div></div> <div data-v-559a9a50="" data-v-7360640c="" class="menu-wrapper menu menu-desktop navigation-secondary hideMenu"><ul data-v-559a9a50="" class="menu-container grid d-flex"><li data-v-559a9a50="" tabindex="0" class="menu-item"><a data-v-57b66a64="" data-v-559a9a50="" href="https://builtin.com/jobs" class="menu-link bix_link nav-jobs">
+        Jobs
+        <svg data-v-559a9a50="" data-v-57b66a64="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa-icon icon-dropdown svg-inline--fa fa-chevron-down"><path data-v-559a9a50="" data-v-57b66a64="" fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" class=""></path></svg></a></li><li data-v-559a9a50="" tabindex="0" class="menu-item"><a data-v-57b66a64="" data-v-559a9a50="" href="https://builtin.com/companies" class="menu-link bix_link nav-companies">
+        Companies
+        <!----></a></li><li data-v-559a9a50="" tabindex="0" class="menu-item"><a data-v-57b66a64="" data-v-559a9a50="" href="https://builtin.com/tech-topics" class="menu-link drupal_link nav-articles">
+        Articles
+        <svg data-v-559a9a50="" data-v-57b66a64="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa-icon icon-dropdown svg-inline--fa fa-chevron-down"><path data-v-559a9a50="" data-v-57b66a64="" fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" class=""></path></svg></a></li><li data-v-559a9a50="" tabindex="0" class="menu-item"><a data-v-57b66a64="" data-v-559a9a50="" href="https://builtin.com/salaries" class="menu-link drupal_link nav-salaries">
+        Salaries
+        <svg data-v-559a9a50="" data-v-57b66a64="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa-icon icon-dropdown svg-inline--fa fa-chevron-down"><path data-v-559a9a50="" data-v-57b66a64="" fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" class=""></path></svg></a></li><li data-v-559a9a50="" tabindex="0" class="menu-item"><a data-v-57b66a64="" data-v-559a9a50="" href="https://builtin.com/learn" class="menu-link drupal_link nav-courses">
+        Courses
+        <!----></a></li> <li data-v-559a9a50="" tabindex="0" class="menu-item push-right"><a data-v-57b66a64="" data-v-559a9a50="" href="https://builtin.com/home/jobs/saved" class="menu-link drupal_link nav-my-items"><svg data-v-559a9a50="" data-v-57b66a64="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa-icon fa-marker svg-inline--fa fa-heart color-pink"><path data-v-559a9a50="" data-v-57b66a64="" fill="currentColor" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" class=""></path></svg>
+        My Items
+        <!----></a></li></ul></div></div> <div data-v-71fefb68="" data-v-2e21df91="" data-v-7360640c="" class="dropdown w-100 main-menu-dropdown position-absolute inactive"><div data-v-71fefb68="" class="bi-container"><div data-v-71fefb68="" class="dropdown-content-wrapper"><!----></div></div></div> <div data-v-7360640c="" class="market-dropdown-wrapper main-search-wrapper position-absolute w-100"><!----></div></div> <!----></nav> <!----></div> <!----> <!---->   <!----> <!----> <!----> <!----> <!----> <!----> <!----></div></div></div><script>window.__NUXT__={config:{_app:{basePath:"/",assetsPath:"/",cdnURL:"https://frontend.builtin.com/033e4c9fbcff3181926ad9a8d916fd53774c263c/"}}}</script></div></div></div><div class="region region-help"><div data-drupal-messages-fallback="" class="hidden"></div></div><div class="region region-featured-top"><div class="region-inner"><div id="block-blognationalheader" class="block block-bix-blogs block-bix-blogs-header-national"><div class="block-content with-hero-image with-byline-background"><div class="header-left"></div><div class="background"><div class="header-right"><div class="tags"><div class="tags-inner"><span class="tag-name"><a href="https://builtin.com/data-science" target="_blank">Data Science</a></span></div><div class="tags-inner"><span class="tag-name"><a href="https://builtin.com/expert-contributors" target="_blank">Expert Contributors</a></span></div><div class="tags-inner"><span class="tag-name"><a href="https://builtin.com/machine-learning" target="_blank">Machine Learning</a></span></div><div class="tags-inner-mobile"><span class="tag-name"><a href="https://builtin.com/data-science" target="_blank">Data Science</a></span></div><div class="tag-inner-mobile-counter"><span class="tag-name"><span class="topic-click">+2</span></span></div></div><h1 class="title">How to Preprocess Data in Python</h1><div class="subtitle">Here’s a step-by-step tutorial on data preprocessing implementation using Python, NumPy and Pandas.</div><div class="written-by-container"><div class="writtenby_photo"><img class="b-lazy b-loaded is-b-loaded" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/Chakure,%20Afroz_0.avif"></div><div class="written-info"><div class="writtenby_name"><span class="written_by_text">Written by</span><span class="written_by_name"><a href="https://builtin.com/authors/afroz-chakure" hreflang="en">Afroz Chakure</a></span></div><div class="writtenby_date">Published on Jun. 10, 2022</div><div class="written-by-popup-box" id="written-by-popup-box" style="display: none;"><div class="top"><div class="writtenby_photo"><img src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/Chakure,%20Afroz_0.avif"></div><div class="writtenby_name"><span class="written_by_name"><a href="https://builtin.com/authors/afroz-chakure" hreflang="en">Afroz Chakure</a></span><div class="written_by_title">Junior Software Engineer at <span class="company">Tietoevry</span></div></div><a href="https://builtin.com/authors/afroz-chakure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" fill="currentColor"></path></svg></a></div><span class="border"></span><span class="description">Afroz
+ Chakure works as a full stack developer at Tietoevry in banking. He has
+ worked for startups in machine learning and computer vision since 2019.
+ He holds a degree in computer science and engineering from MIT World 
+Peace University, Pune. <span class="caret-down"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" fill="currentColor"></path></svg></span></span></div></div></div></div></div></div><div class="image-byline-wrapper"><div class="blog-image"><img class="b-lazy b-loaded is-b-loaded" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/how-to-preprocess-data-python.avif" srcset="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/how-to-preprocess-data-python_002.png 400w, How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/how-to-preprocess-data-python.png 600w, How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/how-to-preprocess-data-python.avif 752w" sizes="100vw" alt="how-to-preprocess-data-python" title="" height="435"> <a href="https://builtin.com/expert-contributors"><img src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/expert-contrib-badge.svg"></a><div class="image-caption"></div></div></div></div></div></div> <main id="page-main-content" role="main"> <a id="main-content" tabindex="-1"></a><div class="layout-content"><div class="region region-content"><div class="l-three-columns container"><div class="l-main-container clearfix display-flex"><div class="l-content"><div class="row row-region-middle"><div class="row-inside"><div class="block-region-middle"><div class="block block-ctools block-entity-viewnode"><div class="updated-wrapper-blank"></div> <article class="blog-national"><div class="wrap-share-social"><div id="bix-share-social" class="bix-share-social-spotlight"><div class="a2a_kit a2a_kit_size_24 a2a_default_style my-items"> <my-item entity-type="article" entity-id="45119" variant="circle-button" status="unsaved" class="initialized" data-once="toggle-item-event"></my-item> <a class="a2a_button_linkedin bix_share_button" data-type="linkedin" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://www.linkedin.com/shareArticle?url=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python&amp;mini=true"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z" fill="currentColor"></path></svg> </a> <a class="a2a_button_hacker_news bix_share_button" data-type="hackernews" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python&amp;t=How%20to%20Preprocess%20Data%20in%20Python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M0 32v448h448V32H0zm21.2 197.2H21c.1-.1.2-.3.3-.4 0 .1 0 .3-.1.4zm218 53.9V384h-31.4V281.3L128 128h37.3c52.5 98.3 49.2 101.2 59.3 125.6 12.3-27 5.8-24.4 60.6-125.6H320l-80.8 155.1z" fill="currentColor"></path></svg> </a> <a class="a2a_button_reddit bix_share_button" data-type="reddit" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://www.reddit.com/submit?url=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python&amp;title=How%20to%20Preprocess%20Data%20in%20Python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M440.3 203.5c-15 0-28.2 6.2-37.9 15.9-35.7-24.7-83.8-40.6-137.1-42.3L293 52.3l88.2 19.8c0 21.6 17.6 39.2 39.2 39.2 22 0 39.7-18.1 39.7-39.7s-17.6-39.7-39.7-39.7c-15.4 0-28.7 9.3-35.3 22l-97.4-21.6c-4.9-1.3-9.7 2.2-11 7.1L246.3 177c-52.9 2.2-100.5 18.1-136.3 42.8-9.7-10.1-23.4-16.3-38.4-16.3-55.6 0-73.8 74.6-22.9 100.1-1.8 7.9-2.6 16.3-2.6 24.7 0 83.8 94.4 151.7 210.3 151.7 116.4 0 210.8-67.9 210.8-151.7 0-8.4-.9-17.2-3.1-25.1 49.9-25.6 31.5-99.7-23.8-99.7zM129.4 308.9c0-22 17.6-39.7 39.7-39.7 21.6 0 39.2 17.6 39.2 39.7 0 21.6-17.6 39.2-39.2 39.2-22 .1-39.7-17.6-39.7-39.2zm214.3 93.5c-36.4 36.4-139.1 36.4-175.5 0-4-3.5-4-9.7 0-13.7 3.5-3.5 9.7-3.5 13.2 0 27.8 28.5 120 29 149 0 3.5-3.5 9.7-3.5 13.2 0 4.1 4 4.1 10.2.1 13.7zm-.8-54.2c-21.6 0-39.2-17.6-39.2-39.2 0-22 17.6-39.7 39.2-39.7 22 0 39.7 17.6 39.7 39.7-.1 21.5-17.7 39.2-39.7 39.2z" fill="currentColor"></path></svg> </a> <a class="a2a_button_twitter bix_share_button" data-type="twitter" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://twitter.com/share?text=How%20to%20Preprocess%20Data%20in%20Python&amp;url=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z" fill="currentColor"></path></svg> </a> <a class="a2a_button_facebook bix_share_button" data-type="facebook" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" fill="currentColor"></path></svg> </a></div></div></div><div class="node--content"><div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><p><span><span><span><span><span><span>In
+ this article, we’ll prep a machine learning model&nbsp; to predict who 
+survived the Titanic. To do that, we first have to clean up our data. 
+I’ll show you how to apply preprocessing techniques on the <a href="https://www.kaggle.com/c/titanic-gettingStarted/data" target="_blank">Titanic data set</a>.&nbsp;</span></span></span></span></span></span></p><p><span><span><span><span><span><span>To get started, you’ll need:</span></span></span></span></span></span></p><ul><li><span><span><span><span><span><span>Python</span></span></span></span></span></span></li><li><span><span><span><span><span><span>NumPy</span></span></span></span></span></span></li><li><span><span><span><span><span><span>Pandas</span></span></span></span></span></span></li><li><span><span><span><span><span><span>The </span></span></span></span></span></span><a href="https://www.kaggle.com/c/titanic-gettingStarted/data" target="_blank"><span><span><span><span><span><span><span>Titanic</span></span></span></span></span></span></span></a><span><span><span><span><span><span> data set</span></span></span></span></span></span></li></ul><p>&nbsp;</p><h2><span><span><span><span><span><span>What Is Data Preprocessing and Why Do We Need It?</span></span></span></span></span></span></h2><p><span><span><span><span><span><span>For machine learning algorithms to work, it’s necessary to convert </span></span></span></span></span></span><span><span><span><strong><span><span>raw data</span></span></strong></span></span></span><span><span><span><span><span><span> into a </span></span></span></span></span></span><span><span><span><strong><span><span>clean</span></span></strong></span></span></span><span><span><span><span><span><span> </span></span></span></span></span></span><span><span><span><strong><span><span>data</span></span></strong></span></span></span><span><span><span><span><span><span> set, which means we must convert the data set to </span></span></span></span></span></span><span><span><span><strong><span><span>numeric data</span></span></strong></span></span></span><span><span><span><span><span><span>. We do this by encoding all the </span></span></span></span></span></span><span><span><span><strong><span><span>categorical labels</span></span></strong></span></span></span><span><span><span><span><span><span> to column vectors with binary values. </span></span></span></span></span></span><span><span><span><strong><span><span>Missing values</span></span></strong></span></span></span><span><span><span><span><span><span>,
+ or NaNs (not a number) in the data set is an annoying problem. You have
+ to either drop the missing rows or fill them up with a mean or 
+interpolated values.</span></span></span></span></span></span></p><p><span><span><span><span><span><span>Note:
+ Kaggle provides two data sets: training data and results data. Both 
+data sets must have the same dimensions for the model to produce 
+accurate results.</span></span></span></span></span></span></p><div class="snippet-box snippet-box-ordered"><div><h2 class="title">How to Preprocess Data in Python Step-by-Step</h2><div class="description"><ol><li>Load data in Pandas.</li><li>Drop columns that aren’t useful.</li><li>Drop rows with missing values.</li><li>Create dummy variables.</li><li>Take care of missing data.</li><li>Convert the data frame to NumPy.</li><li>Divide the data set into training data and test data.</li></ol></div></div></div><p>&nbsp;</p><h2><span><span><span><strong><span><span>1. Load Data in Pandas</span></span></strong></span></span></span></h2><p><span><span><span><span><span><span>To work on the data, you can either load the CSV in Excel or in <a href="https://builtin.com/data-science/data-wrangling-pandas" target="_blank">Pandas</a>. For the purposes of this tutorial, we’ll load the CSV data in Pandas.</span></span></span></span></span></span></p><div><pre><code style="overflow-x: auto;" class=" hljs bash">df = pd.read_csv(<span class="hljs-string">'train.csv'</span>)</code></pre><p><span><span><span><span><span><span>Let's take a look at the data format below:</span></span></span></span></span></span></p></div><div><pre><code style="overflow-x: auto;" class=" hljs cs">&gt;&gt;&gt; df.info()
+&lt;class <span class="hljs-string">'pandas.core.frame.DataFrame'</span>&gt;
+Int64Index: <span class="hljs-number">891</span> entries, <span class="hljs-number">0</span> to <span class="hljs-number">890</span>
+Data columns (total <span class="hljs-number">12</span> columns):
+PassengerId <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Survived <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Pclass <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Name <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span>
+Sex <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span>
+Age <span class="hljs-number">714</span> non-<span class="hljs-keyword">null</span> float64
+SibSp <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Parch <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Ticket <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span>
+Fare <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+Cabin <span class="hljs-number">204</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span>
+Embarked <span class="hljs-number">889</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span></code></pre><p><span><span><span><span><span><span>If you carefully observe the above summary of Pandas, there are 891 total rows but </span></span></span></span></span></span><code>Age</code><span><span><span><span><span><span> shows only 714 (which means we’re missing some data), </span></span></span></span></span></span><code>Embarked</code><span><span><span><span><span><span> is missing two rows and </span></span></span></span></span></span><code>Cabin</code><span><span><span><span><span><span> is missing a lot as well. Object data types are non-numeric so we have to find a way to encode them to numerical values.</span></span></span></span></span></span></p><p class="bix-embed-read-more"><span><span>More From Afroz Chakure</span><a href="https://builtin.com/data-science/random-forest-python" target="_blank">Implementing Random Forest Regression in Python: An Introduction</a></span></p><p>&nbsp;</p></div><h2><span><span><span><strong><span><span>2. Drop Columns That Aren’t Useful</span></span></strong></span></span></span></h2><p><span><span><span><span><span><span>Let's try to drop some of the columns which won't contribute much to our machine learning model. We’ll start with </span></span></span></span></span></span><code>Name</code><span><span><span><span><span><span>, </span></span></span></span></span></span><code>Ticket</code><span><span><span><span><span><span> and </span></span></span></span></span></span><code>Cabin</code><span><span><span><span><span><span>.</span></span></span></span></span></span></p><div><pre><code style="overflow-x: auto;" class=" hljs bash">cols = [<span class="hljs-string">'Name'</span>, <span class="hljs-string">'Ticket'</span>, <span class="hljs-string">'Cabin'</span>]
+df = df.drop(cols, axis=<span class="hljs-number">1</span>)</code></pre><p><span><span><span><span><span><span>We dropped three columns:</span></span></span></span></span></span></p></div><div><pre><code style="overflow-x: auto;" class=" hljs cs">&gt;&gt;&gt;df.info()
+PassengerId <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Survived <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Pclass <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Sex <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span>
+Age <span class="hljs-number">714</span> non-<span class="hljs-keyword">null</span> float64
+SibSp <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Parch <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Fare <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+Embarked <span class="hljs-number">889</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span></code></pre><p>&nbsp;</p></div><h2><span><span><span><strong><span><span>3. Drop Rows With Missing Values</span></span></strong></span></span></span></h2><p><span><span><span><span><span><span>Next we can drop all rows in the data that have missing values (NaNs). Here’s how:</span></span></span></span></span></span></p><pre><code style="overflow-x: auto;" class=" hljs cs">&gt;&gt;&gt; df = df.dropna()
+
+&gt;&gt;&gt; df.info()
+Int64Index: <span class="hljs-number">712</span> entries, <span class="hljs-number">0</span> to <span class="hljs-number">890</span>
+Data columns (total <span class="hljs-number">9</span> columns):
+PassengerId <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> int64
+Survived <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> int64
+Pclass <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> int64
+Sex <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span>
+Age <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> float64
+SibSp <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> int64
+Parch <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> int64
+Fare <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> float64
+Embarked <span class="hljs-number">712</span> non-<span class="hljs-keyword">null</span> <span class="hljs-keyword">object</span></code></pre><h3>&nbsp;</h3><h3><span><span><span><strong><span><span>The Problem With Dropping Rows&nbsp;</span></span></strong></span></span></span></h3><p><span><span><span><span><span><span>After dropping rows with missing values, we find the data set is reduced to 712 rows from 891, which means we are </span></span></span></span></span></span><span><span><span><strong><span><span>wasting data</span></span></strong></span></span></span><span><span><span><span><span><span>.
+ Machine learning models need data to train and perform well. So, let’s 
+preserve the data and make use of it as much as we can. More on this 
+below.</span></span></span></span></span></span></p><p class="bix-embed-read-more"><span><span>Built In Expert Contributors Can Help</span><a href="https://builtin.com/data-science/how-to-find-residuals" target="_blank">How to Find Residuals in Regression Analysis</a></span></p><p>&nbsp;</p><h2><span><span><span><strong><span><span>4. Creating Dummy Variables</span></span></strong></span></span></span></h2><p><span><span><span><span><span><span>Instead of wasting our data, let’s convert the </span></span></span></span></span></span><code>Pclass</code><span><span><span><span><span><span>, </span></span></span></span></span></span><code>Sex</code><span><span><span><span><span><span>&nbsp;and </span></span></span></span></span></span><code>Embarked</code><span><span><span><span><span><span> to columns in Pandas and drop them after conversion.</span></span></span></span></span></span></p><div><pre><code style="overflow-x: auto;" class=" hljs bash">dummies = []
+cols = [<span class="hljs-string">'Pclass'</span>, <span class="hljs-string">'Sex'</span>, <span class="hljs-string">'Embarked'</span>]
+<span class="hljs-keyword">for</span> col <span class="hljs-keyword">in</span> cols:
+   dummies.append(pd.get_dummies(df[col]))</code></pre><p><span><span><span><span><span><span>Then…</span></span></span></span></span></span></p></div><div><pre><code style="overflow-x: auto;" class=" hljs ini"><span class="hljs-setting">titanic_dummies = <span class="hljs-value">pd.concat(dummies, axis=<span class="hljs-number">1</span>)</span></span></code></pre><p><span><span><span><span><span><span>Now we’ve transformed&nbsp; eight columns wherein </span></span></span></span></span></span><code>1</code><span><span><span><span><span><span>, </span></span></span></span></span></span><code>2</code><span><span><span><strong><span><span> </span></span></strong><span><span>and</span></span><strong><span><span><span><span><span><span><span><span> </span></span></span></span></span></span></span></span></strong></span></span></span><code>3</code><span><span><span><span><span><span> represent the passenger class.</span></span></span></span></span></span></p></div><img alt="how-to-preprocess-data-python" data-entity-type="file" data-entity-uuid="b187cf0f-b5f4-440a-b6b2-60984d1832f9" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/1_how-to-preprocess-data-python.png" class="align-center b-lazy updated-style-by-js" loading="lazy" style="width: 512px" width="512" height="183"><p><span><span><span><span><span><span>Finally we </span></span></span></span></span></span><span><span><span><strong><span><span>concatenate</span></span></strong></span></span></span><span><span><span><span><span><span> to the original data frame, column-wise:</span></span></span></span></span></span></p><div><pre><code style="overflow-x: auto;" class=" hljs ini"><span class="hljs-setting">df = <span class="hljs-value">pd.concat((df,titanic_dummies), axis=<span class="hljs-number">1</span>)</span></span></code></pre><p><span><span><span><span><span><span>Now that we converted </span></span></span></span></span></span><code>Pclass</code><span><span><span><span><span><span>, </span></span></span></span></span></span><code>Sex</code><span><span><span><span><span><span>and </span></span></span></span></span></span><code>Embarked</code><span><span><span><span><span><span> values into columns, we drop the redundant columns from the data frame.</span></span></span></span></span></span></p></div><div><pre><code style="overflow-x: auto;" class=" hljs sql">df = df.<span class="hljs-operator"><span class="hljs-keyword">drop</span>([<span class="hljs-string">'Pclass'</span>, <span class="hljs-string">'Sex'</span>, <span class="hljs-string">'Embarked'</span>], axis=<span class="hljs-number">1</span>)</span></code></pre><p><span><span><span><span><span><span>Let's take a look at the new data frame:</span></span></span></span></span></span></p></div><div><pre><code style="overflow-x: auto;" class=" hljs cs">&gt;&gt;&gt;df.info()
+PassengerId <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Survived <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Age <span class="hljs-number">714</span> non-<span class="hljs-keyword">null</span> float64
+SibSp <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Parch <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Fare <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+<span class="hljs-number">1</span> <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+<span class="hljs-number">2</span> <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+<span class="hljs-number">3</span> <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+female <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+male <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+C <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+Q <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+S <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64</code></pre><div class="video-embed-field-provider-youtube video-embed-field-responsive-video"><iframe loading="lazy" allowfullscreen="allowfullscreen" class="b-lazy" src="https://www.youtube.com/embed/ePHZlT1XjrA?autoplay=0&amp;start=0&amp;rel=0" width="854" height="480" frameborder="0"></iframe><noscript><div class="player-unavailable"><div class="message">An error occurred.</div><div class="submessage">Unable to execute JavaScript. Try watching this video on <a href="https://www.youtube.com/embed/ePHZlT1XjrA?autoplay=0&amp;start=0&amp;rel=0" target="_blank">www.youtube.com</a>, or enable JavaScript if it is disabled in your browser.</div></div></noscript></div><figcaption class="video-caption">Data Preprocessing Using Pandas and Matplotlib</figcaption><p class="bix-embed-read-more"><span><span>More on Dummy Variables</span><a href="https://builtin.com/machine-learning/dummy-variable-trap-pandas" target="_blank">Beware of the Dummy Variable Trap in Pandas</a></span></p><p>&nbsp;</p></div><h2><span><span><span><strong><span><span>5. Take Care of Missing Data</span></span></strong></span></span></span></h2><p><span><span><span><span><span><span>Everything’s clean now, except </span></span></span></span></span></span><code>Age</code><span><span><span><strong><span><span>,</span></span></strong><span><span><span> which has lots of missing values. Let’s compute a median or </span></span></span></span></span></span><code>interpolate()</code><span><span><span><span><span><span> all the ages and fill those missing age values. Pandas has an </span></span></span></span></span></span><code>interpolate()</code><span><span><span><span><span><span> function that will replace all the missing NaNs to interpolated values.</span></span></span></span></span></span></p><div><pre><code style="overflow-x: auto;" class=" hljs bash">df[<span class="hljs-string">'Age'</span>] = df[<span class="hljs-string">'Age'</span>].interpolate()</code></pre><p><span><span><span><span><span><span>Now let's observe the data columns. Notice </span></span></span></span></span></span><code>Age</code><span><span><span><span><span><span>is now<span><span><span><strong><span><span> </span></span></strong></span></span></span>interpolated with imputed new values.</span></span></span></span></span></span></p></div><div><pre><code style="overflow-x: auto;" class=" hljs cs">&gt;&gt;&gt;df.info()
+Data columns (total <span class="hljs-number">14</span> columns):
+PassengerId <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Survived <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Age <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+SibSp <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Parch <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> int64
+Fare <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+<span class="hljs-number">1</span> <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+<span class="hljs-number">2</span> <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+<span class="hljs-number">3</span> <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+female <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+male <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+C <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64
+Q <span class="hljs-number">891</span> non-<span class="hljs-keyword">null</span> float64</code></pre><p class="bix-embed-read-more"><span><span>More Python Tutorials</span><a href="https://builtin.com/data-science/how-to-find-outliers-with-iqr" target="_blank">How to Find Outliers With IQR Using Python</a></span></p><p>&nbsp;</p></div><h2><span><span><span><strong><span><span>6. Convert the Data Frame to NumPy</span></span></strong></span></span></span></h2><p><span><span><span><span><span><span>Now that we’ve converted all the data to integers, it's time to prepare the data for machine learning models. This is where <a href="https://builtin.com/data-science/scikit-learn" target="_blank">scikit-learn</a> and NumPy come into play:</span></span></span></span></span></span></p><p><code>X</code><span><span><span><span><span><span>= Input set with 14 attributes</span></span></span></span></span></span></p><p><code>y</code><span><span><span><span><span><span> = Small </span></span></span></span></span></span><code>y</code><span><span><span><span><span><span> output, in this case </span></span></span></span></span></span><code>Survived</code></p><p><span><span><span><span><span><span>Now we convert our data frame from Pandas to <a href="https://builtin.com/data-science/numpy-random-seed" target="_blank">NumPy</a> and we assign input and output:</span></span></span></span></span></span></p><div><pre><code style="overflow-x: auto;" class=" hljs perl">X = df.<span class="hljs-keyword">values</span>
+<span class="hljs-keyword">y</span> = df[<span class="hljs-string">'Survived'</span>].<span class="hljs-keyword">values</span></code></pre><p><code>X</code><span><span><span><span><span><span> still has </span></span></span></span></span></span><code>Survived</code><span><span><span><span><span><span> values in it, which should not be there. So we drop in the NumPy column, which is the first column.</span></span></span></span></span></span></p></div><div><pre><code style="overflow-x: auto;" class=" hljs sql">X = np.<span class="hljs-operator"><span class="hljs-keyword">delete</span>(X, <span class="hljs-number">1</span>, axis=<span class="hljs-number">1</span>)</span></code></pre><p class="bix-embed-read-more"><span><span>More Tutorials From Built In Experts</span><a href="https://builtin.com/data-science/how-to-use-make-float-in-python" target="_blank">How to Use Float in Python (With Sample Code!)</a></span></p><p>&nbsp;</p></div><h2><span><span><span><strong><span><span>7. Divide the Data Set Into Training Data and Test Data</span></span></strong></span></span></span></h2><p><span><span><span><span><span><span>Now that we’re ready with </span></span></span></span></span></span><code>X</code><span><span><span><span><span><span> and </span></span></span></span></span></span><code>y</code><span><span><span><span><span><span>, let's split the data set: we’ll allocate 70 percent for training and 30 percent for tests using <a href="https://builtin.com/machine-learning/scikit-learn-guide" target="_blank">scikit</a> </span></span></span></span></span></span><code>model_selection</code><span><span><span><span><span><span>.</span></span></span></span></span></span></p><div><pre><code style="overflow-x: auto;" class=" hljs python"><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="hljs-number">0.3</span>, random_state=<span class="hljs-number">0</span>)</code></pre><p><span><span><span><span><span><span>And
+ that’s all, folks. Now you can preprocess data on your own. Go on and 
+try it for yourself to start building your own models and making 
+predictions. </span></span></span></span></span></span></p></div></div><div class="wrap-share-social-fixed"><div id="bix-share-social" class="bix-share-social-spotlight"><div class="a2a_kit a2a_kit_size_24 a2a_default_style my-items"> <my-item entity-type="article" entity-id="45119" variant="circle-button" status="unsaved" class="initialized" data-once="toggle-item-event"></my-item> <a class="a2a_button_linkedin bix_share_button" data-type="linkedin" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://www.linkedin.com/shareArticle?url=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python&amp;mini=true"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z" fill="currentColor"></path></svg> </a> <a class="a2a_button_hacker_news bix_share_button" data-type="hackernews" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python&amp;t=How%20to%20Preprocess%20Data%20in%20Python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M0 32v448h448V32H0zm21.2 197.2H21c.1-.1.2-.3.3-.4 0 .1 0 .3-.1.4zm218 53.9V384h-31.4V281.3L128 128h37.3c52.5 98.3 49.2 101.2 59.3 125.6 12.3-27 5.8-24.4 60.6-125.6H320l-80.8 155.1z" fill="currentColor"></path></svg> </a> <a class="a2a_button_reddit bix_share_button" data-type="reddit" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://www.reddit.com/submit?url=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python&amp;title=How%20to%20Preprocess%20Data%20in%20Python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M440.3 203.5c-15 0-28.2 6.2-37.9 15.9-35.7-24.7-83.8-40.6-137.1-42.3L293 52.3l88.2 19.8c0 21.6 17.6 39.2 39.2 39.2 22 0 39.7-18.1 39.7-39.7s-17.6-39.7-39.7-39.7c-15.4 0-28.7 9.3-35.3 22l-97.4-21.6c-4.9-1.3-9.7 2.2-11 7.1L246.3 177c-52.9 2.2-100.5 18.1-136.3 42.8-9.7-10.1-23.4-16.3-38.4-16.3-55.6 0-73.8 74.6-22.9 100.1-1.8 7.9-2.6 16.3-2.6 24.7 0 83.8 94.4 151.7 210.3 151.7 116.4 0 210.8-67.9 210.8-151.7 0-8.4-.9-17.2-3.1-25.1 49.9-25.6 31.5-99.7-23.8-99.7zM129.4 308.9c0-22 17.6-39.7 39.7-39.7 21.6 0 39.2 17.6 39.2 39.7 0 21.6-17.6 39.2-39.2 39.2-22 .1-39.7-17.6-39.7-39.2zm214.3 93.5c-36.4 36.4-139.1 36.4-175.5 0-4-3.5-4-9.7 0-13.7 3.5-3.5 9.7-3.5 13.2 0 27.8 28.5 120 29 149 0 3.5-3.5 9.7-3.5 13.2 0 4.1 4 4.1 10.2.1 13.7zm-.8-54.2c-21.6 0-39.2-17.6-39.2-39.2 0-22 17.6-39.7 39.2-39.7 22 0 39.7 17.6 39.7 39.7-.1 21.5-17.7 39.2-39.7 39.2z" fill="currentColor"></path></svg> </a> <a class="a2a_button_twitter bix_share_button" data-type="twitter" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://twitter.com/share?text=How%20to%20Preprocess%20Data%20in%20Python&amp;url=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z" fill="currentColor"></path></svg> </a> <a class="a2a_button_facebook bix_share_button" data-type="facebook" target="_blank" rel="nofollow" data-once="bixGlobalShareSocialButton" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fbuiltin.com%2Fmachine-learning%2Fhow-to-preprocess-data-python"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa" role="img" aria-hidden="true" style="color:currentColor"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" fill="currentColor"></path></svg> </a></div></div></div><div class="newsletter-signup-container builtin-nuxt-app"><section data-v-1a7cea8f="" data-v-7ae4d302="" class="newsletter-signup-drupal"><div data-v-1a7cea8f="" class="wrap-newsletter-signup"><div data-v-c0fd0ffe="" data-v-1a7cea8f="" class="newsletter-signup"><div data-v-c0fd0ffe="" class="wrap-newsletter-signup"><div data-v-1a7cea8f="" data-v-c0fd0ffe="" class="title">
+          Subscribe to Built In to get tech articles + jobs in your inbox<span data-v-1a7cea8f="" data-v-c0fd0ffe="">.</span></div> <div data-v-c0fd0ffe="" class="nl-form"><div data-v-c0fd0ffe="" class="newsletter-signup-form"><div data-v-c0fd0ffe="" class="nl-field nl-field-expertise is-empty"><div data-v-c0fd0ffe="" class="field-content"><label data-v-c0fd0ffe="" for="nl-expertise-list">Your Expertise</label> <svg data-v-c0fd0ffe="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="caret-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="fa-icon svg-inline--fa fa-caret-down"><path data-v-c0fd0ffe="" fill="currentColor" d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" class=""></path></svg> <select data-v-c0fd0ffe="" id="nl-expertise-list"><option data-v-c0fd0ffe="" disabled="disabled" selected="selected" value="0"></option> <option data-v-c0fd0ffe="" value="134">
+                Content
+              </option><option data-v-c0fd0ffe="" value="392">
+                Customer Success
+              </option><option data-v-c0fd0ffe="" value="393">
+                Cybersecurity + IT
+              </option><option data-v-c0fd0ffe="" value="124">
+                Data + Analytics
+              </option><option data-v-c0fd0ffe="" value="125">
+                Design + UX
+              </option><option data-v-c0fd0ffe="" value="126">
+                Developer + Engineer
+              </option><option data-v-c0fd0ffe="" value="123">
+                Finance
+              </option><option data-v-c0fd0ffe="" value="127">
+                HR + Recruiting
+              </option><option data-v-c0fd0ffe="" value="128">
+                Legal
+              </option><option data-v-c0fd0ffe="" value="129">
+                Marketing
+              </option><option data-v-c0fd0ffe="" value="130">
+                Operations
+              </option><option data-v-c0fd0ffe="" value="131">
+                Product
+              </option><option data-v-c0fd0ffe="" value="132">
+                Project Mgmt
+              </option><option data-v-c0fd0ffe="" value="133">
+                Sales
+              </option></select></div></div> <div data-v-c0fd0ffe="" class="nl-field nl-field-email is-empty"><div data-v-c0fd0ffe="" class="field-content"><label data-v-c0fd0ffe="" for="nl-email">Email Address</label> <input data-v-c0fd0ffe="" id="nl-email" type="text"></div></div> <!----> <div data-v-c0fd0ffe="" class="nl-field nl-field-button"><button data-v-c0fd0ffe="" disabled="disabled"><span data-v-c0fd0ffe="">Subscribe</span></button></div></div> <!----></div></div></div></div></section></div><div class="recent-articles-container builtin-nuxt-app"><section data-v-9015443c="" data-v-7ae4d302="" class="recent-articles"><div data-v-9015443c="" class="recent-articles-wrapper"><h2 data-v-9015443c="">
+      Recent <span data-v-9015443c="">Machine Learning</span> articles
+    </h2> <ul data-v-9015443c="" class="recent-articles-list"><li data-v-faefd838="" data-v-9015443c="" class="recent-articles-card"><a data-v-57b66a64="" data-v-faefd838="" href="https://builtin.com/articles/ai-certification" data-test-id="rac-link" class="rac-link"><img data-v-29970e71="" data-v-faefd838="" src="data:image/svg+xml,%3Csvg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 380 210&quot;%3E%3C/svg%3E" alt="" class="" data-v-57b66a64="" width="380" height="210"> <div data-v-faefd838="" data-v-57b66a64="" class="rac-title-container"><h3 data-v-faefd838="" data-v-57b66a64="" class="rac-title">20 AI Certifications to Know</h3></div> </a></li><li data-v-faefd838="" data-v-9015443c="" class="recent-articles-card"><a data-v-57b66a64="" data-v-faefd838="" href="https://builtin.com/articles/robots-and-robotics" data-test-id="rac-link" class="rac-link"><img data-v-29970e71="" data-v-faefd838="" src="data:image/svg+xml,%3Csvg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 380 210&quot;%3E%3C/svg%3E" alt="" class="" data-v-57b66a64="" width="380" height="210"> <div data-v-faefd838="" data-v-57b66a64="" class="rac-title-container"><h3 data-v-faefd838="" data-v-57b66a64="" class="rac-title">Here’s How AI Is Building a Robot-Filled World</h3></div> </a></li><li data-v-faefd838="" data-v-9015443c="" class="recent-articles-card"><a data-v-57b66a64="" data-v-faefd838="" href="https://builtin.com/articles/fiber-optic-networks-ai" data-test-id="rac-link" class="rac-link"><img data-v-29970e71="" data-v-faefd838="" src="data:image/svg+xml,%3Csvg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 380 210&quot;%3E%3C/svg%3E" alt="" class="" data-v-57b66a64="" width="380" height="210"> <div data-v-faefd838="" data-v-57b66a64="" class="rac-title-container"><h3 data-v-faefd838="" data-v-57b66a64="" class="rac-title">How Will Fiber Optic Networks Keep up With AI?</h3></div> </a></li></ul></div></section></div><div id="topics"><div class="field field--name-field-blog-topics field--type-entity-reference field--label-hidden field__items"><div class="field__item"><a href="https://builtin.com/data-science" hreflang="en">Data Science</a></div><div class="field__item"><a href="https://builtin.com/expert-contributors" hreflang="en">Expert Contributors</a></div><div class="field__item"><a href="https://builtin.com/machine-learning" hreflang="en">Machine Learning</a></div></div></div></div> </article><div class="row-inside"></div></div><div class="block block-bix-blogs block-bix-blogs-expert-contribution"><div class="block-content"><figure class="image-wrapper"><img alt="" aria-hidden="true" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/expert-contrib-badge_002.svg"></figure><div><span class="heading">Expert Contributors</span><p class="expert-text">Built
+ In’s expert contributor network publishes thoughtful, 
+solutions-oriented stories written by innovative tech professionals. It 
+is the tech industry’s definitive destination for sharing compelling, 
+first-person accounts of problem-solving on the road to innovation.</p><a href="https://builtin.com/expert-contributors">Learn More</a></div></div></div></div></div></div><div class="row row-region-postscript"><div class="row-inside"><div class="block-region-postscript"></div></div></div><div class="row row-region-bottom"><div class="row-inside"><div class="block-region-bottom"><div class="block block-bix-blogs-recruit-with-us"><div class="block-content"><h3>Great Companies Need Great People. <b>That's Where We Come In.</b></h3><a href="http://employers.builtin.com/membership?utm_medium=BIReferral&amp;utm_source=foremployers" data-ga-event="b2b-recruit-with-us-footer" data-builtin-track-click-event="recruit_with_us_button" class="ga-event-processed" data-once="builtinTrackClick">Recruit With Us</a></div></div></div></div></div></div></div></div></div></div> </main> <footer role="contentinfo" class="main-footer-container footer-national"><div class="footer-wrapper"><div class="footer-content"><div class="footer-column"><div class="region region-footer-first"><div id="block-footerblock" class="block block-bix-global block-bix-global-footer"><div class="builtin-logo"><a href="https://builtin.com/home"><img loading="lazy" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/builtin-logo.svg" alt="BuiltIn" width="105px" height="47px"></a></div><div class="motto"><img loading="lazy" src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/united-we-tech.svg" alt="United We Tech" width="177px" height="19px"></div><div class="blurb">Built In is the online community for startups and tech companies. Find startup jobs, tech news and events.</div><div class="social-links"><a href="https://facebook.com/builtinhq" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#fff" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg></a><a href="https://twitter.com/builtin" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#fff" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg></a><a href="https://www.instagram.com/builtin" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="instagram" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#fff" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg></a><a href="https://www.linkedin.com/company/3763094" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="linkedin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#fff" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg></a></div></div></div></div><div class="footer-links"><div class="region region-footer-third"> <nav role="navigation" aria-labelledby="block-about-menu" id="block-about" class="block block-menu navigation menu--about"><div class="box-title" id="block-about-menu">About</div><ul class="menu"><li class="menu-item"> <a href="https://builtin.com/our-story" target="_blank">Our Story</a></li><li class="menu-item"> <a href="https://employers.builtin.com/careers/" target="_blank">Careers</a></li><li class="menu-item"> <a href="https://builtin.com/our-staff" target="_blank">Our Staff Writers</a></li><li class="menu-item"> <a href="https://builtin.com/content-descriptions" target="_blank">Content Descriptions</a></li><li class="menu-item"> <a href="https://employers.builtin.com/newsroom/" target="_blank">Company News</a></li></ul> </nav></div><div class="region region-footer-second"> <nav role="navigation" aria-labelledby="block-getinvolved-menu" id="block-getinvolved" class="block block-menu navigation menu--get-involved"><div class="box-title" id="block-getinvolved-menu">Get Involved</div><ul class="menu"><li data-builtin-track-click-event="click_recruit_wbuiltin_footernav_link" class="menu-item menu-item--under-line" data-once="builtinTrackClick"> <a href="https://employers.builtin.com/membership?utm_medium=BIReferral&amp;utm_source=foremployers" target="_blank">Recruit With Built In</a></li><li class="menu-item"> <a href="https://builtin.com/newsletter" target="_blank">Subscribe to Our Newsletter</a></li><li class="menu-item"> <a href="https://builtin.com/expert-contributors" target="_blank">Become an Expert Contributor</a></li><li class="menu-item"> <a href="https://builtin.com/send-us-tip" target="_blank">Send Us a News Tip</a></li></ul> </nav></div><div class="region region-footer-fourth"> <nav role="navigation" aria-labelledby="block-resources-menu" id="block-resources" class="block block-menu navigation menu--resources"><div class="box-title" id="block-resources-menu">Resources</div><ul class="menu"><li class="menu-item"> <a href="https://knowledgebase.builtin.com/s/">Customer Support</a></li><li class="menu-item"> <a href="https://form.jotform.com/223044927257054">Share Feedback</a></li><li class="menu-item"> <a href="https://knowledgebase.builtin.com/s/contactsupport">Report a Bug</a></li><li class="menu-item"> <a href="https://builtin.com/tech-dictionary" data-drupal-link-system-path="tech-dictionary">Tech A-Z</a></li><li class="menu-item"> <a href="https://builtin.com/browse-jobs">Browse Jobs</a></li></ul> </nav></div><div class="region region-footer-fifth"> <nav role="navigation" aria-labelledby="block-poweredbybuiltin-menu" id="block-poweredbybuiltin" class="block block-menu navigation menu--powered-by-built-in"><div class="box-title" id="block-poweredbybuiltin-menu">Tech Hubs</div><ul class="menu"><li class="menu-item"> <a href="https://www.builtinaustin.com/" target="_blank">Built In Austin</a></li><li class="menu-item"> <a href="https://www.builtinboston.com/" target="_blank">Built In Boston</a></li><li class="menu-item"> <a href="https://www.builtinchicago.org/" target="_blank">Built In Chicago</a></li><li class="menu-item"> <a href="https://www.builtincolorado.com/" target="_blank">Built In Colorado</a></li><li class="menu-item"> <a href="https://www.builtinla.com/" target="_blank">Built In LA</a></li><li class="menu-item"> <a href="https://www.builtinnyc.com/" target="_blank">Built In NYC</a></li><li class="menu-item"> <a href="https://www.builtinsf.com/" target="_blank">Built In San Francisco</a></li><li class="menu-item"> <a href="https://www.builtinseattle.com/" target="_blank">Built In Seattle</a></li><li class="menu-item"> <a href="https://builtin.com/tech-hubs" target="_blank">See All Tech Hubs</a></li></ul> </nav></div></div></div><div class="cityscape"></div><div class="region region-footer-bottom"><div id="block-copyrightblock" class="block block-bix-global block-bix-global-copyright"> © Built In 2024</div><nav role="navigation" aria-labelledby="block-footerbottom-menu" id="block-footerbottom" class="block block-menu navigation menu--footer-bottom"><ul class="menu"><li class="menu-item"> <a href="https://builtin.com/learning-lab-user-agreement">Learning Lab User Agreement</a></li><li class="menu-item"> <a href="https://builtin.com/accessibility-statement">Accessibility Statement</a></li><li class="menu-item"> <a href="https://builtin.com/copyright-policy">Copyright Policy</a></li><li class="menu-item"> <a href="https://builtin.com/privacy-policy">Privacy Policy</a></li><li class="menu-item"> <a href="https://builtin.com/community-terms-of-use">Terms of Use</a></li><li class="menu-item"> <a href="https://builtin.com/california-do-not-sell-my-information" class="do-not-sell">Your Privacy Choices/Cookie Settings</a></li><li class="menu-item"> <a href="https://builtin.com/ca-notice-collection">CA Notice of Collection</a></li></ul> </nav></div></div> </footer></div><div class="overlay"></div></div><script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","scriptPath":null,"pathPrefix":"","currentPath":"node\/1044051","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"bix\/blog_national.node,bix\/components.popup_login_register,bix\/components.sticky,bix\/fontawesome.svg,bix\/global,bix\/save_items,bix_global\/bix_global.bix_share_social,bix_learn_labs\/bix_learn_labs.see_all_sources,blazy\/blazy,blazy\/classlist,blazy\/load,blazy\/polyfill,blazy\/promise,blazy\/raf,blazy\/webp,builtin_faq_embed\/faq_accordian,builtin_footnotes_embed\/see_all_footnotes,builtin_jobs_embed\/jobs-embed,builtin_table_of_contents_embed\/builtin_table_accordian,classy\/base,classy\/messages,codesnippet\/codesnippet.highlightjs,codesnippet\/codesnippet.style.arta,core\/normalize,system\/base,video_embed_field\/responsive-video","theme":"bix","theme_token":null},"ajaxTrustedUrl":[],"blazy":{"loadInvisible":true,"offset":300,"saveViewportOffsetDelay":50,"validateDelay":null,"container":"","loader":true,"unblazy":false,"visibleClass":false},"blazyIo":{"disconnect":false,"rootMargin":"0px","threshold":[0,0.25,0.5,0.75,1]},"updated_by_section":false,"event_tracking_url":"https:\/\/api.builtin.com\/track\/client-event","market_id":9,"nid":"1044051","node_type":"blog","user":{"uid":0,"permissionsHash":"3d3a5d274c4d8e58e20b1694fc035e8806b252f711a8a8b430bf76afb00d3874"}}</script><script src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/js_Mtj5B6WhjmLli6_fjOCexocZ4O7z485qkipGdCKUSvY.js"></script><script src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/main.bundle.js" async=""></script><script src="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/js_9ikabSiwAr39bMnIdu_zn83V_LFyB9Ia2pMshVkt2_8.js"></script><script>(function(){if (!document.body) return;var js = "window['__CF$cv$params']={r:'87fbf497ce5fdb00',t:'MTcxNTAyOTgxMC4yNjQwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script><iframe style="position: absolute; top: 0px; left: 0px; border: medium none; visibility: hidden;" width="1" height="1"></iframe><div id="drupal-live-announce" class="visually-hidden" aria-live="polite" aria-busy="false"></div><div id="drupal-modal" class="ui-front" style="display: none;"></div><link href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/e1873c0.css" rel="stylesheet" type="text/css"><link href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/ff68513.css" rel="stylesheet" type="text/css"><link href="How%20to%20Preprocess%20Data%20in%20Python%20Built%20In_files/af9ee71.css" rel="stylesheet" type="text/css"></body></html>
